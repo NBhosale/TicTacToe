@@ -35,8 +35,7 @@ public class PlayScreen extends AppCompatActivity implements View.OnClickListene
         switch (v.getId()) {
 
             case R.id.playButton:
-                Intent intent = new Intent(this, PlayModeActivity.class);
-                startActivity(intent);
+                launchPlayMode();
                 break;
 
             case R.id.aboutButton:
@@ -44,8 +43,7 @@ public class PlayScreen extends AppCompatActivity implements View.OnClickListene
                 break;
 
             case R.id.exitButton:
-                finish();
-                System.exit(0);
+                exitApplcation();
                 break;
 
             default:
@@ -54,4 +52,13 @@ public class PlayScreen extends AppCompatActivity implements View.OnClickListene
 
     }
 
+    public void launchPlayMode(){
+        Intent intent = new Intent(this, PlayModeActivity.class);
+        startActivity(intent);
+    }
+
+    public void exitApplcation(){
+        finish();
+        System.exit(0);
+    }
 }

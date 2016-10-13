@@ -162,25 +162,55 @@
         android:background="@drawable/woodbackground"
         android:gravity="center_vertical">
 
-        <TextView
-            android:text="Player1"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/player1"
-            android:layout_weight="1"
-            android:gravity="center_vertical|center_horizontal"
-            android:textSize="40sp"
-            android:textStyle="bold|italic"/>
+            android:layout_weight="1">
 
-        <TextView
-            android:text="Player2"
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/xplayer"
+                android:id="@+id/imageView"
+                android:layout_weight="1" />
+
+            <TextView
+                android:text="Player1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/player1"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:textSize="25sp"
+                android:textStyle="bold|italic"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/player2"
-            android:layout_weight="1"
-            android:gravity="center_vertical|center_horizontal"
-            android:textSize="40sp"
-            android:textStyle="bold|italic"/>
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/oplayer"
+                android:id="@+id/imageView2"
+                android:layout_weight="1" />
+
+            <TextView
+                android:text="Player2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/player2"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:textSize="25sp"
+                android:textStyle="bold|italic"/>
+        </LinearLayout>
+
+
     </LinearLayout>
 
 </LinearLayout>
