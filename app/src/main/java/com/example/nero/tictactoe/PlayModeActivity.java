@@ -1,0 +1,14 @@
+package com.example.nero.tictactoe;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+public class PlayModeActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.playmode);
+    }
+}

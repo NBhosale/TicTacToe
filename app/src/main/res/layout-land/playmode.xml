@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/woodbackground"
-        android:layout_weight="0.4"
+        android:layout_weight="0.3"
         android:gravity="center_vertical">
 
         <Button
@@ -57,8 +57,8 @@
         android:layout_marginLeft="170dp"
         android:layout_marginRight="170dp"
         android:background="@android:color/background_dark"
-        android:layout_marginBottom="15dp"
-        android:layout_marginTop="15dp">
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -169,10 +169,10 @@
             android:text="Player1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView4"
+            android:id="@+id/player1"
             android:layout_weight="1"
             android:gravity="center_vertical|center_horizontal"
-            android:textSize="40sp"
+            android:textSize="30sp"
             android:textStyle="bold|italic"/>
 
         <TextView
@@ -182,7 +182,7 @@
             android:id="@+id/textView"
             android:layout_weight="1"
             android:gravity="center_vertical|center_horizontal"
-            android:textSize="40sp"
+            android:textSize="30sp"
             android:textStyle="bold|italic"/>
     </LinearLayout>
 
