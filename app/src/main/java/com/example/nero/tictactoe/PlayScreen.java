@@ -30,6 +30,12 @@ public class PlayScreen extends AppCompatActivity implements View.OnClickListene
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+    }
+
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
