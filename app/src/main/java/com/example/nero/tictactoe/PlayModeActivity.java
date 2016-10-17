@@ -247,6 +247,9 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
         button9.setBackgroundResource(R.mipmap.oldcanvas);
         button9.setEnabled(true);
 
+        player1Move = true;
+        player2Move = false;
+
     }
 
 }

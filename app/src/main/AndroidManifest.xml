@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".PlayModeActivity" />
-        <activity android:name=".AboutScreen"></activity>
+        <activity android:name=".AboutScreen" android:theme="@style/AppTheme.CutomThemePopUp"></activity>
     </application>
 
 </manifest>

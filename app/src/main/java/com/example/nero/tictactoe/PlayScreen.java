@@ -45,7 +45,7 @@ public class PlayScreen extends AppCompatActivity implements View.OnClickListene
                 break;
 
             case R.id.aboutButton:
-
+               startActivity(new Intent(this, AboutScreen.class));
                 break;
 
             case R.id.exitButton:

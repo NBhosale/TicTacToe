@@ -176,13 +176,13 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:text="Player1"
+                android:text="@string/playerx"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/player1"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:textSize="25sp"
+                android:textSize="35sp"
                 android:textStyle="bold|italic"/>
         </LinearLayout>
 
@@ -200,13 +200,13 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:text="Player2"
+                android:text="@string/playero"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/player2"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:textSize="25sp"
+                android:textSize="35sp"
                 android:textStyle="bold|italic"/>
         </LinearLayout>
 
