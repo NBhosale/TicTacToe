@@ -2,6 +2,7 @@ package com.example.nero.tictactoe;
 
 import android.content.Intent;
 import android.os.StrictMode;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -27,6 +28,9 @@ public class PlayScreen extends AppCompatActivity implements View.OnClickListene
 
         exit = (Button) findViewById(R.id.exitButton);
         exit.setOnClickListener(this);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     @Override
@@ -41,7 +45,7 @@ public class PlayScreen extends AppCompatActivity implements View.OnClickListene
         switch (v.getId()) {
 
             case R.id.playButton:
-                launchPlayMode();
+                launchUserInfoMode();
                 break;
 
             case R.id.aboutButton:
@@ -58,8 +62,8 @@ public class PlayScreen extends AppCompatActivity implements View.OnClickListene
 
     }
 
-    public void launchPlayMode(){
-        Intent intent = new Intent(this, PlayModeActivity.class);
+    public void launchUserInfoMode(){
+        Intent intent = new Intent(this, UserInfoActivity.class);
         startActivity(intent);
     }
 

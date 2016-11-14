@@ -17,35 +17,33 @@
 
         <Button
             android:text="@string/back"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:id="@+id/BackButton"
-            android:layout_weight="3"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
             android:textSize="30sp"
             android:textStyle="bold|italic"
-            android:textColor="@color/white"
-            android:layout_marginLeft="10dp" />
+            android:textColor="@color/white" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             app:srcCompat="@mipmap/tictactoelogo"
             android:id="@+id/imageView4"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_marginBottom="4dp" />
 
         <Button
             android:text="@string/new_game"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:id="@+id/NewButton"
-            android:layout_weight="3"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
             android:textColor="@color/white"
             android:textSize="30sp"
-            android:textStyle="bold|italic"
-            android:layout_marginLeft="10dp" />
+            android:textStyle="bold|italic" />
 
     </LinearLayout>
 
@@ -64,8 +62,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            >
+            android:layout_weight="1">
 
             <Button
                 android:layout_width="match_parent"
@@ -165,36 +162,111 @@
         android:background="@mipmap/woodbackground"
         android:gravity="center_vertical">
 
-        <ImageView
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:srcCompat="@mipmap/xplayer"
-            android:id="@+id/imageView"
-            android:layout_weight="1" />
-        <TextView
-            android:text="@string/playerx"
+            android:layout_weight="1">
+            <Button
+                android:text="Stats"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/statsButton"
+                android:layout_weight="1.8"
+                android:background="@null"
+                android:textSize="20sp"
+                android:textStyle="bold|italic"
+                android:textColor="@color/borderColor" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:srcCompat="@android:drawable/ic_dialog_dialer"
+                android:id="@+id/statsImage"
+                android:layout_weight="1"
+                android:layout_gravity="left" />
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:srcCompat="@mipmap/xplayer"
+                android:id="@+id/imageView"
+                android:layout_weight="0.5"
+                android:layout_marginLeft="5dp" />
+
+            <TextView
+                android:text=""
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/userNameTextView"
+                android:layout_weight="2"
+                android:gravity="center_vertical|center_horizontal"
+                android:textSize="18sp"
+                android:maxLength="8"
+                android:textStyle="bold|italic"/>
+
+            <TextView
+                android:text="@string/playerx"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/player1"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:textSize="25sp"
+                android:textStyle="bold|italic"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/player1"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:textSize="35sp"
-            android:textStyle="bold|italic"/>
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:srcCompat="@mipmap/oplayer"
-            android:id="@+id/imageView2"
-            android:layout_weight="1" />
-        <TextView
-            android:text="@string/playero"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/player2"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:textSize="35sp"
-            android:textStyle="bold|italic"/>
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:srcCompat="@mipmap/oplayer"
+                android:id="@+id/imageView2"
+                android:layout_weight="0.5"
+                android:layout_marginLeft="5dp" />
+
+            <TextView
+                android:text="Android"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/textView2"
+                android:layout_weight="2"
+                android:gravity="center_vertical|center_horizontal"
+                android:textSize="18sp"
+                android:maxLength="8"
+                android:textStyle="bold|italic"/>
+
+            <TextView
+                android:text="@string/playero"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/player2"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:textSize="25sp"
+                android:textStyle="bold|italic"/>
+            <Button
+                android:text="Share"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/shareButton"
+                android:layout_weight="1.8"
+                android:background="@null"
+                android:textSize="20sp"
+                android:textStyle="bold|italic"
+                android:textColor="@color/borderColor" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:srcCompat="@android:drawable/ic_menu_share"
+                android:id="@+id/shareImage"
+                android:layout_weight="1" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

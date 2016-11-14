@@ -1,5 +1,7 @@
 package com.example.nero.tictactoe;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -61,5 +63,6 @@ public class AboutScreen extends AppCompatActivity {
         int height = ms.heightPixels;
 
         getWindow().setLayout((int)(width * 0.90), (int)(height * 0.6));
+
     }
 }

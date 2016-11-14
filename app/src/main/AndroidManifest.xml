@@ -17,8 +17,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PlayModeActivity" />
-        <activity android:name=".AboutScreen" android:theme="@style/AppTheme.CutomThemePopUp"></activity>
+        <activity
+            android:name=".PlayModeActivity"
+            android:configChanges="orientation" />
+        <activity
+            android:name=".AboutScreen"
+            android:theme="@style/AppTheme.CutomThemePopUp" />
+        <activity
+            android:name=".UserInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Stats"
+            android:theme="@style/AppTheme.CutomThemePopUp"></activity>
     </application>
 
 </manifest>
