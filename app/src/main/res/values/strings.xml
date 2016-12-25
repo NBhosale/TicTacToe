@@ -16,5 +16,8 @@
     <string name="backToMainMenu">Back</string>
     <string name="against">Against:</string>
     <string name="player">Player:</string>
+    <string name="second_player">Second Player</string>
+    <string name="single_play">Single Player</string>
+    <string name="multiplayer">Multi-Player</string>
 
 </resources>

@@ -53,13 +53,21 @@
         android:layout_weight="0.15">
 
         <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/SoundButton"
+            android:layout_weight="0.70"
+            android:onClick="volumeController"
+            android:background="@mipmap/volumeon" />
+
+        <Button
             android:text="Stats"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/statsButton"
-            android:layout_weight="2"
+            android:layout_weight="1.2"
             android:background="@null"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:textStyle="bold|italic"
             android:textColor="@color/borderColor" />
 
@@ -68,17 +76,26 @@
             android:layout_height="match_parent"
             app:srcCompat="@android:drawable/ic_dialog_dialer"
             android:id="@+id/statsImage"
-            android:layout_weight="1"
+            android:layout_weight="0.70"
             android:layout_gravity="left" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/textViewTimer"
+            android:layout_weight="1"
+            android:textSize="20sp"
+            android:textStyle="bold|italic"
+            android:gravity="center_vertical|center_horizontal" />
 
         <Button
             android:text="Share"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/shareButton"
-            android:layout_weight="2"
+            android:layout_weight="1.2"
             android:background="@null"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:textStyle="bold|italic"
             android:textColor="@color/borderColor" />
 
@@ -87,7 +104,7 @@
             android:layout_height="match_parent"
             app:srcCompat="@android:drawable/ic_menu_share"
             android:id="@+id/shareImage"
-            android:layout_weight="1" />
+            android:layout_weight="0.70" />
     </LinearLayout>
 
     <LinearLayout
@@ -217,7 +234,8 @@
                 android:layout_height="match_parent"
                 app:srcCompat="@mipmap/xplayer"
                 android:id="@+id/imageView"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:layout_marginLeft="3dp" />
 
             <TextView
                 android:text=""
@@ -255,7 +273,6 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:text="Android"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:id="@+id/androidPlayer"
@@ -273,7 +290,8 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:textSize="35sp"
-                android:textStyle="bold|italic"/>
+                android:textStyle="bold|italic"
+                android:layout_marginRight="3dp" />
         </LinearLayout>
 
 

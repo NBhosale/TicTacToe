@@ -2,7 +2,9 @@ package com.example.nero.tictactoe;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,11 +35,12 @@ import java.util.Set;
 public class PlayModeActivity extends AppCompatActivity implements View.OnClickListener {
 
     /*
-    *  9 buttons for the gridview
+    *  9 buttons for the gridview and the requred variables
     * */
     private Button button1, button2, button3, button4, button5, button6, button7, button8, button9;
     private Button buttonNew, buttonBack;
     private TextView player1, player2;
+    private Button VolumeController;
     private boolean player1Move = true;
     private boolean player2Move = false;
     private int resourceDefaultIdImages = R.mipmap.oldcanvas;
@@ -48,19 +54,34 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
     private final String enablePropertyOfButtonsKey = "enablePropertyOfButtonsKey";
     private final String playerNameForSaveInstance = "playerNameForSaveInstance";
     private String booleanHolderPlayer1 = "booleanHolderPlayer1", booleanHolderPlayer2 = "booleanHolderPlayer2";
-    private TextView userNameTextView;
-    private String userNameHolder = "Player";
+    private TextView userNameTextView, androidNameTextView;
+    private String userNameHolder = "Player", androidNameHolder = "Android";
     private ImageView stats, share;
     private String fileName = "userscores.txt";
+    private String fileTimeStamp = "userscoresTimeStamp.txt";
     private Map<String, Integer> userScores;
-    private String userData = "";
-    private String UserName, UserScore, AndroidName, AndroidScore;
-    private String storeUserDataToFile = "";
+    private Map<String, String> userScoresTimeStamp;
     private int playerPlaceStoreArray[][] = new int[3][3];
     private Button tileButtonsMultiDimension[][] = new Button[][]{{button1, button2, button3}, {button4, button5, button6}, {button7, button8, button9}};
     private int buttonIdsMultiDimension[][] = new int[][]{{R.id.button1, R.id.button2, R.id.button3}, {R.id.button4, R.id.button5, R.id.button6}, {R.id.button7, R.id.button8, R.id.button9}};
     private int counter = 0;
+    private boolean didWelcome = true;
+    private String welcomeMessageBoolean = "welcomeMessageBoolean";
+    private DateFormat dateFormat = new SimpleDateFormat("yy/MM/dd HH:mm");
+    private Date date = new Date();
+    private String timeDate = dateFormat.format(date);
+    private MediaPlayer mp;
+    private boolean multiplyerBoolean = false;
+    private float maxVolume = 0.5f, minVolume = 0.3f;
+    private boolean volumeBoolean = false;
+    private String timerStorage = "";
+    private int seconds = 0;
+    //Is the stopwatch running?
+    private boolean running = true;
 
+    /*
+*  view  and variable initaitions
+* */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -75,7 +96,9 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
         }
 
         initiateViewObjects();
-
+  /*
+*  Save instance of view
+* */
         if (savedInstanceState != null) {
 
             userNameHolder = savedInstanceState.getString(playerNameForSaveInstance);
@@ -88,10 +111,73 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
             userNameTextView.setText(userNameHolder);
             player1Move = savedInstanceState.getBoolean(booleanHolderPlayer1);
             player2Move = savedInstanceState.getBoolean(booleanHolderPlayer2);
+            didWelcome = savedInstanceState.getBoolean(welcomeMessageBoolean);
+        }
+
+        if (didWelcome) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Welcome!")
+                    .setMessage("Welcome " + userNameHolder + " & " + androidNameHolder + "!! Thank you for playing and good luck!" + " The scores posted below is total wins on each player.")
+                    .setPositiveButton("Start!", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            runTimer();
+                        }
+                    })
+                    .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            runTimer();
+                        }
+                    })
+                    .show();
+            didWelcome = false;
+        }
+
+    }
+    /*
+   *  Controlles the volume of app
+   * */
+    public void volumeController(View view) {
+        if (volumeBoolean) {
+            VolumeController.setBackgroundResource(R.mipmap.volumeon);
+            volumeBoolean = false;
+            maxVolume = 0.5f;
+            minVolume = 0.3f;
+        } else {
+            VolumeController.setBackgroundResource(R.mipmap.silent);
+            maxVolume = 0f;
+            minVolume = 0f;
+            volumeBoolean = true;
         }
     }
 
+    /*
+*  Timer method to initiate timer
+* */
+    public void runTimer() {
+        final TextView timeView = (TextView) findViewById(R.id.textViewTimer);
+        final Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                int minutes = (seconds % 3600) / 60;
+                int secs = seconds % 60;
+                String time = String.format("%02d:%02d",
+                        minutes, secs);
+                timeView.setText(time);
+                if (running) {
+                    seconds++;
+                }
+                timerStorage = time;
+                handler.postDelayed(this, 1000);
+            }
+        });
+    }
 
+    /*
+* Save instance of the state
+* */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -101,14 +187,31 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
         outState.putString(playerNameForSaveInstance, userNameHolder);
         outState.putBoolean(booleanHolderPlayer1, player1Move);
         outState.putBoolean(booleanHolderPlayer2, player2Move);
-    }
+        outState.putBoolean(welcomeMessageBoolean, didWelcome);
 
+    }
+    /*
+   *  Handle on click listener of the button events for android and player
+   * */
     @Override
     public void onClick(View v) {
+        mp = MediaPlayer.create(getApplicationContext(), R.raw.click);
+        mp.setVolume((float) maxVolume, (float) minVolume);
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.reset();
+                mp.release();
+                mp = null;
+            }
+
+        });
 
         if (player1Move) {
             switch (v.getId()) {
                 case R.id.button1:
+                    mp.start();
                     tileButtons[0].setEnabled(false);
                     saveImageResourceOnRotation[0] = setImageToButton(v);
                     enablePropertyOfButtons[0] = false;
@@ -117,6 +220,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button2:
+                    mp.start();
                     tileButtons[1].setEnabled(false);
                     saveImageResourceOnRotation[1] = setImageToButton(v);
                     enablePropertyOfButtons[1] = false;
@@ -125,6 +229,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button3:
+                    mp.start();
                     tileButtons[2].setEnabled(false);
                     saveImageResourceOnRotation[2] = setImageToButton(v);
                     enablePropertyOfButtons[2] = false;
@@ -141,6 +246,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button5:
+                    mp.start();
                     tileButtons[4].setEnabled(false);
                     saveImageResourceOnRotation[4] = setImageToButton(v);
                     enablePropertyOfButtons[4] = false;
@@ -149,6 +255,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button6:
+                    mp.start();
                     tileButtons[5].setEnabled(false);
                     saveImageResourceOnRotation[5] = setImageToButton(v);
                     enablePropertyOfButtons[5] = false;
@@ -157,6 +264,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button7:
+                    mp.start();
                     tileButtons[6].setEnabled(false);
                     saveImageResourceOnRotation[6] = setImageToButton(v);
                     enablePropertyOfButtons[6] = false;
@@ -165,6 +273,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button8:
+                    mp.start();
                     tileButtons[7].setEnabled(false);
                     saveImageResourceOnRotation[7] = setImageToButton(v);
                     enablePropertyOfButtons[7] = false;
@@ -173,6 +282,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button9:
+                    mp.start();
                     tileButtons[8].setEnabled(false);
                     saveImageResourceOnRotation[8] = setImageToButton(v);
                     enablePropertyOfButtons[8] = false;
@@ -186,6 +296,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
         } else if (player2Move) {
             switch (v.getId()) {
                 case R.id.button1:
+                    mp.start();
                     tileButtons[0].setEnabled(false);
                     saveImageResourceOnRotation[0] = setImageToButton(v);
                     enablePropertyOfButtons[0] = false;
@@ -194,6 +305,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button2:
+                    mp.start();
                     tileButtons[1].setEnabled(false);
                     saveImageResourceOnRotation[1] = setImageToButton(v);
                     enablePropertyOfButtons[1] = false;
@@ -202,6 +314,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button3:
+                    mp.start();
                     tileButtons[2].setEnabled(false);
                     saveImageResourceOnRotation[2] = setImageToButton(v);
                     enablePropertyOfButtons[2] = false;
@@ -210,6 +323,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button4:
+                    mp.start();
                     tileButtons[3].setEnabled(false);
                     saveImageResourceOnRotation[3] = setImageToButton(v);
                     enablePropertyOfButtons[3] = false;
@@ -218,6 +332,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button5:
+                    mp.start();
                     tileButtons[4].setEnabled(false);
                     saveImageResourceOnRotation[4] = setImageToButton(v);
                     enablePropertyOfButtons[4] = false;
@@ -226,6 +341,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button6:
+                    mp.start();
                     tileButtons[5].setEnabled(false);
                     saveImageResourceOnRotation[5] = setImageToButton(v);
                     enablePropertyOfButtons[5] = false;
@@ -234,6 +350,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button7:
+                    mp.start();
                     tileButtons[6].setEnabled(false);
                     saveImageResourceOnRotation[6] = setImageToButton(v);
                     enablePropertyOfButtons[6] = false;
@@ -242,6 +359,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button8:
+                    mp.start();
                     tileButtons[7].setEnabled(false);
                     saveImageResourceOnRotation[7] = setImageToButton(v);
                     enablePropertyOfButtons[7] = false;
@@ -250,6 +368,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     break;
 
                 case R.id.button9:
+                    mp.start();
                     tileButtons[8].setEnabled(false);
                     saveImageResourceOnRotation[8] = setImageToButton(v);
                     enablePropertyOfButtons[8] = false;
@@ -264,6 +383,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
 
         switch (v.getId()) {
             case R.id.NewButton:
+
 
                 new AlertDialog.Builder(this)
                         .setTitle("Restarting Game")
@@ -307,10 +427,8 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                 String storeDataFromHash = new String();
                 for (Map.Entry<String, Integer> entry : userScores.entrySet()) {
                     //System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
-
-
                     int value = Integer.valueOf(entry.getValue());
-                    storeDataFromHash += entry.getKey() + ": "+value +"\n";
+                    storeDataFromHash += entry.getKey() + ": " + value + " wins\n" + "LastPlayed: " + userScoresTimeStamp.get(entry.getKey()) + "\n\n";
                 }
                 Intent intentStats = new Intent(this, Stats.class);
                 intentStats.putExtra("displayStatsToStatsScreen", storeDataFromHash);
@@ -320,10 +438,10 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
             default:
                 break;
         }
-        if (counter <= 8) {
+
             LongOperation longOperation = new LongOperation();
             longOperation.execute(0);
-        }
+
     }
 
 
@@ -331,19 +449,25 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
     *  Method to initiate the view objects
     * */
     public void initiateViewObjects() {
+        VolumeController = (Button) findViewById(R.id.SoundButton);
         userScores = new HashMap<String, Integer>();
+        userScoresTimeStamp = new HashMap<String, String>();
         Intent intent = getIntent();
         userNameHolder = intent.getStringExtra("UserName");
+        androidNameHolder = intent.getStringExtra("SecondPlayerNameToPlay");
         player1Move = intent.getBooleanExtra("PlayerOneMove", true);
         player2Move = intent.getBooleanExtra("PlayerTwoMove", false);
+        multiplyerBoolean = intent.getBooleanExtra("itsMultiplyerGame", false);
         for (int i = 0; i < tileButtons.length; i++) {
             tileButtons[i] = (Button) findViewById(buttonIds[i]);
             tileButtons[i].setOnClickListener(this);
         }
         this.player1 = (TextView) findViewById(R.id.player1);
         this.player2 = (TextView) findViewById(R.id.player2);
+        androidNameTextView = (TextView) findViewById(R.id.androidPlayer);
         userNameTextView = (TextView) findViewById(R.id.userNameTextView);
         userNameTextView.setText(userNameHolder);
+        androidNameTextView.setText(androidNameHolder);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         stats = (ImageView) findViewById(R.id.statsImage);
@@ -352,21 +476,54 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
         share.setOnClickListener(this);
         readFileToSaveData();
 
-        if(!userScores.containsKey(userNameHolder)) {
-            userScores.put(userNameHolder , 0);
+        if (!userScores.containsKey(userNameHolder)) {
+            userScores.put(userNameHolder, 0);
         }
-        if(!userScores.containsKey("Android")){
-            userScores.put("Android" , 0);
+        if (!userScores.containsKey(androidNameHolder)) {
+            userScores.put(androidNameHolder, 0);
         }
-        if(userScores.containsKey(userNameHolder) && userScores.containsKey("Android")){
+        readFileToSaveDataTimeStamp();
+        if (!userScoresTimeStamp.containsKey(userNameHolder)) {
+            userScoresTimeStamp.put(userNameHolder, timeDate);
+        } else {
+            userScoresTimeStamp.put(userNameHolder, timeDate);
+        }
+
+        if (!userScoresTimeStamp.containsKey(androidNameHolder)) {
+            userScoresTimeStamp.put(androidNameHolder, timeDate);
+        } else {
+            userScoresTimeStamp.put(androidNameHolder, timeDate);
+        }
+        if (userScores.containsKey(userNameHolder) && userScores.containsKey(androidNameHolder)) {
             player1.setText(String.valueOf(userScores.get(userNameHolder)));
-            player2.setText(String.valueOf(userScores.get("Android")));
+            player2.setText(String.valueOf(userScores.get(androidNameHolder)));
         }
         LongOperation longOperation = new LongOperation();
         longOperation.execute(0);
+        writeToFile();
+        writeScoreToFile();
+
     }
+    public void writeScoreToFile() {
+        String storeDataFromHash = new String();
+        for (Map.Entry<String, Integer> entry : userScores.entrySet()) {
 
+            int value = Integer.valueOf(entry.getValue());
+            storeDataFromHash += entry.getKey() + ":" + value + "\n";
+        }
+        System.out.println(storeDataFromHash);
+        try {
+            OutputStreamWriter myOutWriter = new OutputStreamWriter(openFileOutput(fileName, MODE_PRIVATE));
+            myOutWriter.append(storeDataFromHash);
+            myOutWriter.close();
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /*
+   *  Resets the views from the layout for next play
+   * */
     public void resetGame() {
         for (int i = 0; i < tileButtons.length - 2; i++) {
             tileButtons[i].setBackgroundResource(resourceDefaultIdImages);
@@ -383,10 +540,13 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                 playerPlaceStoreArray[i][j] = 2;
             }
         }
+        seconds = 0;
         LongOperation longOperation = new LongOperation();
         longOperation.execute(0);
     }
-
+    /*
+   * Helper method to set image of button for each player
+   * */
     public int setImageToButton(View view) {
         if (player1Move) {
             view.setBackgroundResource(resourceIdCross);
@@ -402,7 +562,9 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
         return 0;
     }
 
-
+    /*
+   *  Read file and save data in hashmap to retreve when needed
+   * */
     public void readFileToSaveData() {
 
         if (checkIfFileExist(fileName)) {
@@ -421,7 +583,6 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     int number = Integer.valueOf(strLine.replaceAll("[^0-9]", ""));
                     String nameOfUser = strLine.substring(0, strLine.indexOf(':'));
                     userScores.put(nameOfUser, number);
-                    System.out.println(strLine);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -429,30 +590,69 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
 
         }
     }
+    /*
+   *  Read file and save the time staps for each player
+   * */
+    public void readFileToSaveDataTimeStamp() {
 
-
-    public void writeToFile(String data) {
-
-        if (!userScores.containsKey(data)) {
+        if (checkIfFileExist(fileTimeStamp)) {
+            FileInputStream fileInputStream = null;
             try {
-                OutputStreamWriter myOutWriter = new OutputStreamWriter(openFileOutput(fileName, MODE_APPEND));
-                myOutWriter.append("Android: 0");
-                myOutWriter.close();
-
-            } catch (Exception e) {
+                fileInputStream = openFileInput(fileTimeStamp);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            //Read File Line By Line
+            try {
+                String strLine;
+                while ((strLine = bufferedReader.readLine()) != null) {
+                    String timeStamp = strLine.substring(strLine.indexOf('-') + 1, strLine.length());
+                    String nameOfUser = strLine.substring(0, strLine.indexOf('-'));
+                    userScoresTimeStamp.put(nameOfUser, timeStamp);
+                    System.out.println(timeStamp + " " + nameOfUser);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
+    /*
+   *  Write timestamp and user name ot tot he file
+   * */
+    public void writeToFile() {
+        String storeDataFromHash = new String();
+        for (Map.Entry<String, String> entry : userScoresTimeStamp.entrySet()) {
+            storeDataFromHash += entry.getKey() + "-" + entry.getValue() + "\n";
+        }
+        try {
 
+            OutputStreamWriter myOutWriter = new OutputStreamWriter(openFileOutput(fileTimeStamp, MODE_PRIVATE));
+            myOutWriter.append(storeDataFromHash);
+            myOutWriter.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /*
+   *  Check if the file exists
+   * */
     public boolean checkIfFileExist(String fileName) {
         File file = getBaseContext().getFileStreamPath(fileName);
         return file.exists();
     }
-
+    /*
+   *  Async task class for AI and android turn and to detect the winner.
+   * */
     public class LongOperation extends AsyncTask<Integer, Integer, String> {
         AlertDialog alertDialog;
 
+        /*
+*  Chceck iff the user is winner
+* */
         public boolean userIsWInner() {
             if ((playerPlaceStoreArray[0][0] == 0 && playerPlaceStoreArray[1][1] == 0 && playerPlaceStoreArray[2][2] == 0)
                     || (playerPlaceStoreArray[0][2] == 0 && playerPlaceStoreArray[1][1] == 0 && playerPlaceStoreArray[2][0] == 0)
@@ -466,7 +666,9 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
             }
             return false;
         }
-
+        /*
+       *  Chcek if the android is winner
+       * */
         public boolean androidIsWInner() {
             if ((playerPlaceStoreArray[0][0] == 1 && playerPlaceStoreArray[1][1] == 1 && playerPlaceStoreArray[2][2] == 1)
                     || (playerPlaceStoreArray[0][2] == 1 && playerPlaceStoreArray[1][1] == 1 && playerPlaceStoreArray[2][0] == 1)
@@ -480,7 +682,9 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
             }
             return false;
         }
-
+        /*
+       *  Does the Ai and winning condition checking in the background
+       * */
         @Override
         protected String doInBackground(Integer... params) {
             if (userIsWInner()) {
@@ -488,7 +692,7 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
 
             } else if (androidIsWInner()) {
                 publishProgress(-2);
-            } else if (!userIsWInner() && !androidIsWInner() && counter == 8) {
+            } else if (!userIsWInner() && !androidIsWInner() && counter > 8) {
                 publishProgress(-3);
             } else if (player2Move && counter <= 8) {
                 Random rand = new Random();
@@ -560,21 +764,13 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
             }
             return null;
         }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-        }
-
-
-        @Override
-        protected void onPreExecute() {
-        }
-
+        /*
+       *  Gets the result from the the background thread and proccess the input to post the result and winners condition
+       * */
         @Override
         protected void onProgressUpdate(Integer... values) {
             int a, b;
-            if (values.length > 1) {
+            if (values.length > 1 && !multiplyerBoolean) {
                 a = values[0];
                 b = values[1];
                 if (a == 0 && b == 0) {
@@ -597,7 +793,22 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                     tileButtons[8].performClick();
                 }
             } else if (values[0] == -1) {
-            userScores.put(userNameTextView.getText().toString(), userScores.get(userNameTextView.getText().toString())+1);
+                running = false;
+                mp = MediaPlayer.create(getApplicationContext(), R.raw.cheer);
+                mp.setVolume((float) maxVolume, (float) minVolume);
+                mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        // TODO Auto-generated method stub
+                        mp.reset();
+                        mp.release();
+                        mp = null;
+                    }
+
+                });
+                mp.start();
+                userScores.put(userNameTextView.getText().toString(), userScores.get(userNameTextView.getText().toString()) + 1);
                 for (int i = 0; i < tileButtons.length - 2; i++) {
                     tileButtons[i].setEnabled(false);
                     enablePropertyOfButtons[i] = false;
@@ -605,64 +816,109 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                 int number = userScores.get(userNameTextView.getText().toString());
                 player1.setText(String.valueOf(number));
                 writeToFile();
-               new AlertDialog.Builder(PlayModeActivity.this)
+                new AlertDialog.Builder(PlayModeActivity.this)
                         .setTitle("Winner!!")
-                        .setMessage(userNameTextView.getText().toString() + " is winner!!")
+                        .setMessage(userNameTextView.getText().toString() + " is winner!!" + " You took " + timerStorage + " Time")
                         .setPositiveButton("Restart!", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 restartTheGame();
                             }
                         })
-                       .setNegativeButton("Main menu" , new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialog, int which) {
-                               Intent intent = new Intent(getApplicationContext(), PlayScreen.class);
-                               startActivity(intent);
-                               finish();
-                           }
-                       })
+                        .setNegativeButton("Main menu", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(getApplicationContext(), PlayScreen.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                restartTheGame();
+                            }
+                        })
                         .show();
             } else if (values[0] == -2) {
+                running = false;
+                if (!multiplyerBoolean) {
+                    mp = MediaPlayer.create(getApplicationContext(), R.raw.aww);
+                    mp.setVolume((float) maxVolume, (float) minVolume);
+                    mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            // TODO Auto-generated method stub
+                            mp.reset();
+                            mp.release();
+                            mp = null;
+                        }
+
+                    });
+                    mp.start();
+                } else {
+                    mp = MediaPlayer.create(getApplicationContext(), R.raw.cheer);
+                    mp.setVolume((float) maxVolume, (float) minVolume);
+                    mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            // TODO Auto-generated method stub
+                            mp.reset();
+                            mp.release();
+                            mp = null;
+                        }
+
+                    });
+                    mp.start();
+                }
                 for (int i = 0; i < tileButtons.length - 2; i++) {
                     tileButtons[i].setEnabled(false);
                     enablePropertyOfButtons[i] = false;
                 }
-                userScores.put("Android", userScores.get("Android")+1);
-                int number = userScores.get("Android");
+                userScores.put(androidNameHolder, userScores.get(androidNameHolder) + 1);
+                int number = userScores.get(androidNameHolder);
                 player2.setText(String.valueOf(number));
                 writeToFile();
                 new AlertDialog.Builder(PlayModeActivity.this)
                         .setTitle("Winner!!")
-                        .setMessage("Android is winner!! Better luck next time!!")
+                        .setMessage(androidNameHolder + " is winner!! Better luck next time!!" + " Android took " + timerStorage + " Time")
                         .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 restartTheGame();
                             }
                         })
-                        .setNegativeButton("Main menu" , new DialogInterface.OnClickListener() {
+                        .setNegativeButton("Main menu", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(getApplicationContext(), PlayScreen.class);
                                 startActivity(intent);
                                 finish();
+                            }
+                        })
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                restartTheGame();
                             }
                         })
                         .show();
 
             } else if (values[0] == -3) {
                 writeToFile();
+                running = false;
                 new AlertDialog.Builder(PlayModeActivity.this)
                         .setTitle("Game draw!!")
-                        .setMessage("Game draw! Do you want to restart the game?")
+                        .setMessage("Game draw! Do you want to restart the game?" + " Took " + timerStorage + " Time")
                         .setPositiveButton("New game", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 restartTheGame();
                             }
                         })
-                        .setNegativeButton("Main menu" , new DialogInterface.OnClickListener() {
+                        .setNegativeButton("Main menu", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(getApplicationContext(), PlayScreen.class);
@@ -670,11 +926,21 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
                                 finish();
                             }
                         })
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                restartTheGame();
+                            }
+                        })
                         .show();
             }
         }
-
-        public void restartTheGame(){
+        /*
+       *  Restarts the game when user is winner or android or the game is draw
+       * */
+        public void restartTheGame() {
+            seconds = 0;
+            running = true;
             for (int i = 0; i < tileButtons.length - 2; i++) {
                 tileButtons[i].setBackgroundResource(resourceDefaultIdImages);
                 tileButtons[i].setEnabled(true);
@@ -694,24 +960,26 @@ public class PlayModeActivity extends AppCompatActivity implements View.OnClickL
             LongOperation longOperation = new LongOperation();
             longOperation.execute(0);
         }
+        /*
+       *  Writes to the file the eresult of the game
+       * */
         public void writeToFile() {
             String storeDataFromHash = new String();
             for (Map.Entry<String, Integer> entry : userScores.entrySet()) {
-                //System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
-
 
                 int value = Integer.valueOf(entry.getValue());
-                storeDataFromHash += entry.getKey() + ": "+value +"\n";
+                storeDataFromHash += entry.getKey() + ":" + value + "\n";
             }
-                try {
-                    OutputStreamWriter myOutWriter = new OutputStreamWriter(openFileOutput(fileName, MODE_PRIVATE));
-                    myOutWriter.append(storeDataFromHash);
-                    myOutWriter.close();
+            System.out.println(storeDataFromHash);
+            try {
+                OutputStreamWriter myOutWriter = new OutputStreamWriter(openFileOutput(fileName, MODE_PRIVATE));
+                myOutWriter.append(storeDataFromHash);
+                myOutWriter.close();
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
 
     }
 }

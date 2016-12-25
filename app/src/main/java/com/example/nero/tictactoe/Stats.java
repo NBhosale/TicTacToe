@@ -23,7 +23,9 @@ import java.util.Map;
 
 public class Stats extends AppCompatActivity {
 
-
+    /*
+   *  Gets data from the play screen and displays the stats for the users
+   * */
     private TextView gameStats;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,9 @@ public class Stats extends AppCompatActivity {
         gameStats.setText(data);
     }
 
-
+    /*
+   *  Clears teh activity from behind
+   * */
     @Override
     protected void onStop() {
         super.onStop();

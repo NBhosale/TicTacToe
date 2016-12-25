@@ -10,24 +10,36 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".PlayScreen"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name=".PlayModeActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AboutScreen"
+            android:theme="@style/AppTheme.CutomThemePopUp"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".UserInfoActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Stats"
+            android:theme="@style/AppTheme.CutomThemePopUp" />
+        <activity android:name=".MultiplayerActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SplashScreen"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".PlayModeActivity"
-            android:configChanges="orientation" />
-        <activity
-            android:name=".AboutScreen"
-            android:theme="@style/AppTheme.CutomThemePopUp" />
-        <activity
-            android:name=".UserInfoActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".Stats"
-            android:theme="@style/AppTheme.CutomThemePopUp"></activity>
+            </intent-filter>></activity>
     </application>
 
 </manifest>

@@ -3,8 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#081671</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="borderColor">#db106ed9</color>
-    <color name="buttonBorder">#d3ec7f</color>
+    <color name="borderColor">#db77a6dd</color>
+    <color name="buttonBorder">#dff597</color>
     <color name="black">#000000</color>
-    <color name="white">#ffffff</color>
+    <color name="white">#fefdfd</color>
 </resources>

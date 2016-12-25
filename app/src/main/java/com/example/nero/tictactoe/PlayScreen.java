@@ -13,16 +13,23 @@ import android.widget.ListView;
 
 public class PlayScreen extends AppCompatActivity implements View.OnClickListener{
 
-    private Button exit, play, about;
+    /*
+*  Declare the buttons for the activity
+* */
+    private Button exit, playSingle, playMulti, about;
 
+    /*
+*  Intitiate the views
+* */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_screen);
 
-        play = (Button) findViewById(R.id.playButton);
-        play.setOnClickListener(this);
-
+        playSingle = (Button) findViewById(R.id.singlePlayButton);
+        playSingle.setOnClickListener(this);
+        playMulti = (Button) findViewById(R.id.multiPlayButton);
+        playMulti.setOnClickListener(this);
         about = (Button) findViewById(R.id.aboutButton);
         about.setOnClickListener(this);
 
@@ -38,14 +45,21 @@ public class PlayScreen extends AppCompatActivity implements View.OnClickListene
         super.onStop();
         finish();
     }
-
+    /*
+   *  Handles the on click for button events
+   * */
     @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
 
-            case R.id.playButton:
+            case R.id.singlePlayButton:
                 launchUserInfoMode();
+                break;
+
+            case R.id.multiPlayButton:
+                Intent intent = new Intent(this, MultiplayerActivity.class);
+                startActivity(intent);
                 break;
 
             case R.id.aboutButton:
@@ -61,7 +75,9 @@ public class PlayScreen extends AppCompatActivity implements View.OnClickListene
         }
 
     }
-
+    /*
+   *  Launches the single player activity info
+   * */
     public void launchUserInfoMode(){
         Intent intent = new Intent(this, UserInfoActivity.class);
         startActivity(intent);

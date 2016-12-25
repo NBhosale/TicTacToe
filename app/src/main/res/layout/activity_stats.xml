@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/gameStats"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:textColor="@color/white" />
     </LinearLayout>
     </ScrollView>
